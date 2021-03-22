@@ -1,0 +1,13 @@
+{"customer": {
+   "firstName":"John",
+   "lastName":"Doe",
+   "gender":"Male",
+   "address": {
+     "street":"123 Fake Street"
+   },
+   "phone-numbers":{
+      "phone-number":[ {
+         "value":"123-4567"} , {
+         "value":"345-6789"}]
+   }
+}}

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+<xs:schema
+    targetNamespace="urn:customer"
+    xmlns="urn:customer"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:sdo="commonj.sdo"
+    xmlns:sdoj="commonj.sdo/java"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified"
+    sdoj:package="org.eclipse.persistence.testing.sdo.instanceclass">
+    <xs:complexType name="CustomerInterfaceWithCorrectGetters">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="address" type="Address"/>
+            <xs:element name="phone-number" type="xs:string" maxOccurs="unbounded"/>
+            <xs:element name="changeSummary" type="sdo:ChangeSummaryType" minOccurs="0" sdo:propertyType="sdo:ChangeSummaryType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Address">
+        <xs:sequence>
+            <xs:element name="street" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

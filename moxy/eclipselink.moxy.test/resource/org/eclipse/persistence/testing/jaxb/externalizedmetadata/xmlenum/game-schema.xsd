@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <xsd:complexType name="game">
+      <xsd:sequence>
+         <xsd:element name="card" type="card" minOccurs="0"/>
+         <xsd:element name="coin" type="coin-enum" minOccurs="0"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:element name="game" type="game"/>
+   <xsd:simpleType name="department">
+      <xsd:restriction base="xsd:int">
+         <xsd:enumeration value="1"/>
+         <xsd:enumeration value="2"/>
+         <xsd:enumeration value="3"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:simpleType name="card">
+      <xsd:restriction base="xsd:string">
+         <xsd:enumeration value="CLUBS"/>
+         <xsd:enumeration value="DIAMONDS"/>
+         <xsd:enumeration value="HEARTS"/>
+         <xsd:enumeration value="SPADES"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:simpleType name="coin-enum">
+      <xsd:restriction base="xsd:int">
+         <xsd:enumeration value="1"/>
+         <xsd:enumeration value="5"/>
+         <xsd:enumeration value="10"/>
+         <xsd:enumeration value="25"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+</xsd:schema>

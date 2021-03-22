@@ -1,0 +1,41 @@
+{
+   "firstName": "James",
+   "gender": "Male",
+   "id": 2980,
+   "lastName": "Dean",
+   "responsibilities": [],
+   "salary": 0,
+   "managedEmployees": [],
+   "phoneNumbers": [
+      {
+         "id": 3,
+         "_type": "fire",
+         "areaCode": "416"
+      },
+      {
+         "id": 5,
+         "_type": "absent",
+         "areaCode": "613"
+      },
+      {
+         "id": 0,
+         "_type": "elf",
+         "areaCode": "901"
+      },
+      {
+         "id": 4,
+         "_type": "cell1",
+         "areaCode": "613"
+      },
+      {
+         "id": 2,
+         "_type": "daily",
+         "areaCode": "12345"
+      },
+      {
+         "id": 1,
+         "_type": "bogus",
+         "areaCode": "67890"
+      }
+   ]
+}

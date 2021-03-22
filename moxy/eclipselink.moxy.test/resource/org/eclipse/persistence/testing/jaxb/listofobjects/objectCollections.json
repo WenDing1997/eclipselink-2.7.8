@@ -1,0 +1,8 @@
+{"ns0.root":{
+   "xsi.type":"arrayListOfObject",
+   "item":["10",
+   {"xsi.type":"int","value":20},
+   {"xsi.type":"string","value":"30"},
+   {"xsi.type":"int","value":40}
+   ]
+}}

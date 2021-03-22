@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+<xml-bindings xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/oxm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" package-name="mynamespace">
+
+    <xml-schema element-form-default="UNQUALIFIED" attribute-form-default="UNQUALIFIED" namespace="mynamespace">
+        <xml-ns prefix="ns1" namespace-uri="mynamespace"/>
+        <xml-ns prefix="xsd" namespace-uri="http://www.w3.org/2001/XMLSchema"/>
+        <xml-ns prefix="xsi" namespace-uri="http://www.w3.org/2001/XMLSchema-instance"/>
+    </xml-schema>
+
+    <java-types>
+        <java-type name="mynamespace.Person">
+            <xml-root-element name="person"/>
+            <java-attributes>
+                <xml-element java-attribute="write1" type="java.lang.String">
+                    <xml-null-policy null-representation-for-xml="EMPTY_NODE"/>
+                </xml-element>
+                <xml-element java-attribute="write2" type="java.lang.String">
+                    <xml-null-policy null-representation-for-xml="ABSENT_NODE"/>
+                </xml-element>
+                <xml-element java-attribute="write3" type="java.lang.String">
+                    <xml-null-policy null-representation-for-xml="XSI_NIL"/>
+                </xml-element>
+
+                <xml-element java-attribute="read1" type="java.lang.String">
+                    <xml-null-policy null-representation-for-xml="ABSENT_NODE" xsi-nil-represents-null="true" empty-node-represents-null="false"/>
+                </xml-element>
+                <xml-element java-attribute="read2" type="java.lang.String">
+                    <xml-null-policy null-representation-for-xml="ABSENT_NODE" xsi-nil-represents-null="false" empty-node-represents-null="false"/>
+                </xml-element>
+                <xml-element java-attribute="read3" type="java.lang.String">
+                    <xml-null-policy null-representation-for-xml="ABSENT_NODE" xsi-nil-represents-null="true" empty-node-represents-null="true"/>
+                </xml-element>
+                <xml-element java-attribute="read4" type="java.lang.String">
+                    <xml-null-policy null-representation-for-xml="ABSENT_NODE" xsi-nil-represents-null="false" empty-node-represents-null="true"/>
+                </xml-element>
+
+                <xml-element java-attribute="read5" type="mynamespace.Address">
+                    <xml-null-policy null-representation-for-xml="ABSENT_NODE" xsi-nil-represents-null="true" empty-node-represents-null="false"/>
+                </xml-element>
+                <xml-element java-attribute="read6" type="mynamespace.Address">
+                    <xml-null-policy null-representation-for-xml="ABSENT_NODE" xsi-nil-represents-null="false" empty-node-represents-null="false"/>
+                </xml-element>
+                <xml-element java-attribute="read7" type="mynamespace.Address">
+                    <xml-null-policy null-representation-for-xml="ABSENT_NODE" xsi-nil-represents-null="true" empty-node-represents-null="true"/>
+                </xml-element>
+                <xml-element java-attribute="read8" type="mynamespace.Address">
+                    <xml-null-policy null-representation-for-xml="ABSENT_NODE" xsi-nil-represents-null="false" empty-node-represents-null="true"/>
+                </xml-element>
+
+                <xml-element java-attribute="read9" type="java.lang.String">
+                    <xml-null-policy null-representation-for-xml="ABSENT_NODE" xsi-nil-represents-null="true" empty-node-represents-null="false"/>
+                </xml-element>
+                <xml-element java-attribute="read10" type="java.lang.String">
+                    <xml-null-policy null-representation-for-xml="ABSENT_NODE" xsi-nil-represents-null="false" empty-node-represents-null="false"/>
+                </xml-element>
+                <xml-element java-attribute="read11" type="java.lang.String">
+                    <xml-null-policy null-representation-for-xml="ABSENT_NODE" xsi-nil-represents-null="true" empty-node-represents-null="true"/>
+                </xml-element>
+                <xml-element java-attribute="read12" type="java.lang.String">
+                    <xml-null-policy null-representation-for-xml="ABSENT_NODE" xsi-nil-represents-null="false" empty-node-represents-null="true"/>
+                </xml-element>
+            </java-attributes>
+        </java-type>
+
+        <java-type name="mynamespace.Address">
+            <java-attributes>
+                <xml-element java-attribute="info" type="java.lang.String"/>
+            </java-attributes>
+        </java-type>
+    </java-types>
+
+</xml-bindings>

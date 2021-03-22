@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+        <schema attributeFormDefault="qualified"
+            elementFormDefault="qualified"
+            targetNamespace="http://www.globalcompany.com/ns/OrderBooking"
+             xmlns:po="http://www.globalcompany.com/ns/order"
+                      xmlns:nsTest3="blah"
+            xmlns="http://www.w3.org/2001/XMLSchema">
+
+      <import namespace="http://www.globalcompany.com/ns/order" schemaLocation="OrderBookingPO.xsd"/>
+
+            <element name="SOAOrderBookingProcessRequest" xmlns:nsTest="http://www.globalcompany.com/ns/order">
+                <complexType xmlns:nsTest2="http://www.globalcompany.com/ns/order" xmlns:nsTest3="http://www.globalcompany.com/ns/order">
+                    <sequence>
+                               <element ref="po:PurchaseOrder"/>
+                                      <element ref="nsTest:PurchaseOrder2"/>
+                       <element ref="nsTest2:PurchaseOrder3"/>
+                                   <element ref="nsTest3:PurchaseOrder4"/>
+                  <!--element name="PurchaseOrder" type="po:PurchaseOrderType"/-->
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+

@@ -1,0 +1,9 @@
+{"ns0.root":{
+   "xsi.type":"x.myInnerArray",
+   "item":[
+     {"innerName":"aaa"},
+     {"innerName":"bbb"}
+   ]
+  }
+}
+

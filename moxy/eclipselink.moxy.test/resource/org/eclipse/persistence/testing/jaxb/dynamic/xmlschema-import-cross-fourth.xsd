@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+<xs:schema xmlns="http://fourth.temp.com/"
+           xmlns:tns="http://fourth.temp.com/"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://fourth.temp.com/"
+           elementFormDefault="unqualified" attributeFormDefault="unqualified" version="1.0">
+
+    <xs:element name="userId" type="xs:string" />
+    <xs:element name="companyId" type="xs:string" />
+
+    <xs:complexType name="User_Type">
+        <xs:sequence>
+            <xs:element minOccurs="0" ref="tns:userId"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="userKey" type="tns:User_Type">
+    </xs:element>
+
+    <xs:complexType name="Company_Type">
+        <xs:sequence>
+            <xs:element minOccurs="0" ref="tns:companyId"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="companyKey" type="tns:Company_Type">
+    </xs:element>
+</xs:schema>

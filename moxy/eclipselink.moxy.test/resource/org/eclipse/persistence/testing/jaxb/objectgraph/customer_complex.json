@@ -1,0 +1,16 @@
+{"customer": {
+   "firstName":"John",
+   "lastName":"Doe",
+   "age":"35",
+   "gender":"Male",
+   "address": {
+     "street":"123 Fake Street",
+     "city":"Ottawa",
+     "country":"Canada"
+   },
+   "phone-numbers":{
+      "phone-number":[ {
+         "value":"123-4567"} , {
+         "value":"345-6789"}]
+   }
+}}

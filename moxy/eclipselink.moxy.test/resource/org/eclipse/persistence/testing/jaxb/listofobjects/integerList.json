@@ -1,0 +1,5 @@
+{"ns0.root":{
+    "xsi.type":"listOfInteger",
+    "item":[10, 20, 30, 40]
+   }
+}

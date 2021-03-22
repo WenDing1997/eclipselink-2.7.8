@@ -1,0 +1,43 @@
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+<xsd:schema attributeFormDefault="qualified" elementFormDefault="qualified"
+        targetNamespace="http://www.globalcompany.com/ns/OrderBooking"
+        xmlns:po="http://www.globalcompany.com/ns/order"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <xsd:import namespace="http://www.globalcompany.com/ns/order" schemaLocation="OrderBookingPO.xsd"/>
+ <xsd:import namespace="http://www.globalcompany.com/ns/order" schemaLocation="OrderBookingPO2.xsd"/>
+ <xsd:import namespace="http://www.globalcompany.com/ns/OrderBooking/rules" schemaLocation="OrderBookingRules.xsd"/>
+ <xsd:element name="SOAOrderBookingProcessRequest">
+  <xsd:complexType>
+   <xsd:sequence>
+    <xsd:element ref="po:PurchaseOrder"/>
+   </xsd:sequence>
+  </xsd:complexType>
+ </xsd:element>
+ <xsd:element name="SOAOrderBookingProcessResponse">
+  <xsd:complexType>
+   <xsd:sequence>
+    <xsd:element name="result" type="xsd:string"/>
+   </xsd:sequence>
+  </xsd:complexType>
+ </xsd:element>
+ <xsd:element name="SOAOrderBookingProcessFault">
+  <xsd:complexType>
+   <xsd:sequence>
+    <xsd:element name="status" type="xsd:string"/>
+   </xsd:sequence>
+  </xsd:complexType>
+ </xsd:element>
+</xsd:schema>

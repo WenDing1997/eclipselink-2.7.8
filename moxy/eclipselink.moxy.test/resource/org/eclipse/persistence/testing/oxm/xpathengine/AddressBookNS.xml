@@ -1,0 +1,41 @@
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+<addressbook  xmlns:testns="www.example.com/some-dir/someschema.xsd">
+    <address id="10" type="A">
+        <addressee initial="T">John Smith</addressee>
+        <street-address>250 18th Ave SE</street-address>
+        <city>
+            <name>Rochester</name>
+            <code>72235621</code>
+        </city>
+        <state>MN</state>
+        <postal-code>55902</postal-code>
+        <phone area-code="212">555-2442</phone>
+        <phone area-code="222">555-7298</phone>
+        <phone area-code="214">555-2711</phone>
+    </address>
+    <address id="20" type="B">
+        <addressee initial="G" age="25" testns:test="namespacetest">Bill Morris</addressee>
+        <street-address>1234 Center Lane NW</street-address>
+        <city>
+            <name>St. Paul</name>
+            <code>43225211</code>
+        </city>
+        <state>MN</state>
+        <postal-code>55123</postal-code>
+        <phone area-code="613">212-555-8649</phone>
+        <phone area-code="222">212-555-1530</phone>
+    </address>
+</addressbook>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+<ns1:person xmlns:ns1="mynamespace" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <write1></write1>
+   <write2></write2>
+   <write3></write3>
+   <read1 xsi:nil="true"/>
+   <read2 xsi:nil="true"/>
+   <read3 xsi:nil="true"/>
+   <read4 xsi:nil="true"/>
+   <read5 xsi:nil="true"/>
+   <read6 xsi:nil="true"/>
+   <read7 xsi:nil="true"/>
+   <read8 xsi:nil="true"/>
+   <read9/>
+   <read10/>
+   <read11/>
+   <read12/>
+</ns1:person>

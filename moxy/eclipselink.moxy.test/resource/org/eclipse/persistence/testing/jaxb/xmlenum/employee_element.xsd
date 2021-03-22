@@ -1,0 +1,44 @@
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <xsd:complexType name="employeeSingleDepartment">
+      <xsd:sequence>
+         <xsd:element minOccurs="0" name="name" type="xsd:string"/>
+         <xsd:element minOccurs="0" name="department-number" type="department"/>
+         <xsd:element minOccurs="0" name="roundingMode" type="roundingMode"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:element name="employee" type="employeeSingleDepartment"/>
+   <xsd:simpleType name="department">
+      <xsd:restriction base="xsd:int">
+         <xsd:enumeration value="1"/>
+         <xsd:enumeration value="2"/>
+         <xsd:enumeration value="3"/>
+         <xsd:enumeration value="4"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:simpleType name="roundingMode">
+      <xsd:restriction base="xsd:string">
+         <xsd:enumeration value="UP"/>
+         <xsd:enumeration value="DOWN"/>
+         <xsd:enumeration value="CEILING"/>
+         <xsd:enumeration value="FLOOR"/>
+         <xsd:enumeration value="HALF_UP"/>
+         <xsd:enumeration value="HALF_DOWN"/>
+         <xsd:enumeration value="HALF_EVEN"/>
+         <xsd:enumeration value="UNNECESSARY"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+</xsd:schema>

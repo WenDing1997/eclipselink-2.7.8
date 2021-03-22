@@ -1,0 +1,12 @@
+{"testTagName":{
+   "xsi.type":"collectionOfObject",
+   "item":[
+       {
+         "xsi.type":"string",
+         "value":"one"
+    },{
+     "xsi.type":"int",
+         "value":2
+     }
+   ]
+   }}

@@ -1,0 +1,27 @@
+{"root":{
+   "map1":{
+      "entry":[
+         {"key":"key1",
+      "value":"value1"
+      }
+    ]},
+    "map2":{
+       "entry":[
+          {
+       "key":10,
+      "value":{"thing1":"aaa","thing2":"bbb"}
+      }
+        ]},
+    "map3":{
+       "entry":[{
+       "key":"abc",
+       "value":["aaa", "bbb"]
+      }]
+    },
+    "map4":{
+       "entry":[{
+       "key":"abcd",
+       "value":["aaaa", "bbbb"]
+      }]
+    }
+}}

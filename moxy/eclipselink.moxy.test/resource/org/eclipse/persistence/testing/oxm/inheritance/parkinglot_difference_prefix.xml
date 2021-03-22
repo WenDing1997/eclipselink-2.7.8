@@ -1,0 +1,33 @@
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+<different:parking-lot xmlns:different="mynamespaceuri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <different:unmapped xmlns:different="othernamepsaceuri">
+          <different:nested>text</different:nested>
+      </different:unmapped>
+      <different:vehicles>
+        <different:vehicle xsi:type="different:car-type" >
+           <different:model>Grand Am</different:model>
+           <different:manufacturer>Pontiac</different:manufacturer>
+           <different:top-speed>220</different:top-speed>
+           <different:number-of-doors>2</different:number-of-doors>
+           <different:miles-per-gallon>30</different:miles-per-gallon>
+        </different:vehicle>
+        <different:vehicle>
+           <different:model>Blah Blah</different:model>
+           <different:manufacturer>Some Place</different:manufacturer>
+           <different:top-speed>10000</different:top-speed>
+         </different:vehicle>
+    </different:vehicles>
+</different:parking-lot>

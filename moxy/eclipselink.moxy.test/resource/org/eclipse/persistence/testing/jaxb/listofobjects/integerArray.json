@@ -1,0 +1,5 @@
+{"ns0.root":{
+    "xsi.type":"ns1.intArray",
+    "item":[10, 20, 30, 40]
+   }
+}

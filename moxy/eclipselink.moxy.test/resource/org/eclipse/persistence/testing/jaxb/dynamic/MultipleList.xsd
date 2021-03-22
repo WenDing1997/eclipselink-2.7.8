@@ -1,0 +1,49 @@
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+<xsd:schema
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   xmlns="www.example.org/customer"
+   targetNamespace="www.example.org/customer"
+   elementFormDefault="qualified">
+
+   <xsd:complexType name="address">
+      <xsd:sequence>
+         <xsd:element name="city" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="street" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+   </xsd:complexType>
+
+   <xsd:complexType name="phone-number">
+      <xsd:simpleContent>
+         <xsd:extension base="xsd:string">
+            <xsd:attribute name="type" type="xsd:string"/>
+         </xsd:extension>
+      </xsd:simpleContent>
+   </xsd:complexType>
+
+   <xsd:complexType name="customer">
+      <xsd:sequence>
+         <xsd:element name="name" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="address" type="address" minOccurs="0"/>
+         <xsd:element name="addresses" type="address" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="phone-number" type="phone-number" minOccurs="0"/>
+         <xsd:element name="phone-numbers" type="phone-number" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="addresses2" type="address" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+   </xsd:complexType>
+
+   <xsd:element name="customer" type="customer"/>
+
+</xsd:schema>

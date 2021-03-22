@@ -1,0 +1,6 @@
+{"PaymentInf":{
+       "CreditorFrstName":{
+               "id":"CREDITOR-ID"
+       },
+       "paymentId":"PAYMENT-ID"
+}}

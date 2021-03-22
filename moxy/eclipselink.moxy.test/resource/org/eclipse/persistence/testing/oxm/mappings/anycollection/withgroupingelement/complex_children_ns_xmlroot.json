@@ -1,0 +1,21 @@
+
+{"myns.root":{
+    "myns.nested":{
+         "myns.child":["Child1","Child2"],
+     "myns.theInteger":[{
+        "xsi.type":"int",
+        "value":15
+     }],
+     "myns.theString":["15"],
+         "myns.theTime":[{
+        "xsi.type":"time",
+        "value":"09:30:45"
+     }],
+     "myns.someChild":["Child3",{}],
+         "myns.blah":[{
+          "xsi.type":"myns.childType",
+          "value":"Child4"
+     }],
+         "value":["myTextNode"]
+    }
+}}

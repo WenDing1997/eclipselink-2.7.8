@@ -1,0 +1,42 @@
+{"ns0.EMPLOYEEROOT":{
+   "id":10,
+   "BIRTHDAYATTR":"2005-05-24T16:06:53",
+   "FIRSTNAMEELEM":"Bob",
+   "lastname":"Smith",
+   "ADDRESSELEM":{
+      "idid":1,
+      "cityNamecityName":"Dartmouth"
+   },
+   "PHONEELEM":"1234567",
+   "responsibilities":{
+      "responsibility":[
+         {
+         "xsi.type":"string",
+     "value":"Fix Bugs"
+     },
+     {
+         "xsi.type":"string",
+     "value":"Write JAXB2.0 Prototype"
+     },
+     {
+         "xsi.type":"string",
+     "value":"Write Design Spec"
+     }
+       ]
+   },
+   "RESPONSIBILITIES2ELEM":[
+   {
+         "xsi.type":"string",
+     "value":"Fix Bugs"
+     },
+     {
+         "xsi.type":"string",
+     "value":"Write JAXB2.0 Prototype"
+     },
+     {
+         "xsi.type":"string",
+     "value":"Write Design Spec"
+     }
+   ]
+}}
+

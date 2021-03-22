@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <xsd:complexType name="employee">
+      <xsd:sequence>
+         <xsd:element name="personalName" minOccurs="0">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">
+                  <xsd:minLength value="3"/>
+                  <xsd:maxLength value="15"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>
+         <xsd:element name="phoneNumber" minOccurs="0">
+            <xsd:simpleType>
+               <xsd:restriction base="xsd:string">
+                  <xsd:pattern value="\(\d{3}\)\d{3}-\d{4}"/>
+               </xsd:restriction>
+            </xsd:simpleType>
+         </xsd:element>
+         <xsd:element name="department" type="department" minOccurs="0"/>
+         <xsd:element name="drivingLicense" type="drivingLicense" minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:int"/>
+      <xsd:attribute name="age" type="xsd:int" use="required"/>
+   </xsd:complexType>
+   <xsd:complexType name="drivingLicense">
+      <xsd:sequence/>
+      <xsd:attribute name="id" type="xsd:int" use="required"/>
+      <xsd:attribute name="validThrough" type="xsd:dateTime"/>
+   </xsd:complexType>
+   <xsd:element name="employee" type="employee"/>
+   <xsd:element name="department" type="department"/>
+   <xsd:simpleType name="department">
+      <xsd:restriction base="xsd:string">
+         <xsd:enumeration value="RDBMS"/>
+         <xsd:enumeration value="JavaSE"/>
+         <xsd:enumeration value="JavaEE"/>
+         <xsd:enumeration value="Sales"/>
+         <xsd:enumeration value="Support"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+</xsd:schema>

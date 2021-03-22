@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+<order>
+   <items>
+        <item>
+           <id>1</id>
+            <money>
+               <cost>5.00</cost>
+               <price>7.99</price>
+            </money>
+            <description>nice item</description>
+            <description>comes in blue or red</description>
+       </item>
+       <item>
+          <id>2</id>
+          <money>
+              <cost>10.00</cost>
+              <price>15.99</price>
+          </money>
+          <description>big item</description>
+          <description>very heavy</description>
+        </item>
+   </items>
+   <customerInput>
+      <comments>comment1</comments>
+      <comments>comment2</comments>
+      <comments>comment3</comments>
+      <comments></comments>
+   </customerInput>
+   <someClass>java.lang.Integer</someClass>
+   <customer id="0">
+      <firstName>Jane</firstName>
+      <lastName>Smith</lastName>
+      <contact>
+      <address>
+          <street>Main Street</street>
+          <city>Ottawa</city>
+          <id>1</id>
+          <coords>1.111</coords>
+          <coords>2.222</coords>
+      </address>
+      </contact>
+      <firstTimeCustomer>false</firstTimeCustomer>
+      <orderNumbers>10</orderNumbers>
+      <orderNumbers>20</orderNumbers>
+      <orderNumbers>30</orderNumbers>
+   </customer>
+   <id>1</id>
+</order>

@@ -1,0 +1,43 @@
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+<ns1:SOAOrderBookingProcessRequest xmlns:po="http://www.globalcompany.com/ns/order" xmlns:ns1="http://www.globalcompany.com/ns/OrderBooking" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <po:PurchaseOrder>
+      <po:CustID>10</po:CustID>
+      <po:ID>182</po:ID>
+      <po:UserContact>
+         <po:PhoneNumber>18008888000</po:PhoneNumber>
+         <po:EmailAddress>sking@soademo.org</po:EmailAddress>
+      </po:UserContact>
+      <po:OrderItems>
+         <po:Item>
+            <po:ProductName>HD Television</po:ProductName>
+            <po:itemType>Video</po:itemType>
+            <po:partnum>128723</po:partnum>
+            <po:price>1999</po:price>
+            <po:Quantity>1</po:Quantity>
+         </po:Item>
+      </po:OrderItems>
+      <po:SupplierInfo>
+         <po:SupplierPrice>1799.1</po:SupplierPrice>
+         <po:SupplierName>Express Deliveries</po:SupplierName>
+      </po:SupplierInfo>
+      <po:OrderInfo>
+         <po:OrderDate>2006-08-09</po:OrderDate>
+         <po:OrderPrice>999</po:OrderPrice>
+         <po:OrderStatus>pending</po:OrderStatus>
+         <po:OrderComments>This order was issued from the SOA Retail Client.</po:OrderComments>
+      </po:OrderInfo>
+   </po:PurchaseOrder>
+</ns1:SOAOrderBookingProcessRequest>

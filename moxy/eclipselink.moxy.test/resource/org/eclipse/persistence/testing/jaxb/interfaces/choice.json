@@ -1,0 +1,26 @@
+{"ns0.ListmyObject":{
+   "myObject":[{
+       "test":1,
+       "test2":1,
+        "props":{
+       "entry":[
+           {"key":{"xsi.type":"string","value":"formatted"},
+            "value":{"xsi.type":"boolean","value":true}}
+        ]},
+    "anothernameproperties":{
+        "entry":[]
+    }
+      }],
+      "otherObject":[{
+        "anothernameproperties":{
+       "entry":[]
+    },
+    "properties":{
+       "entry":[
+           {"key":{"xsi.type":"string","value":"formatted"},
+            "value":{"xsi.type":"boolean","value":false}}
+        ]},
+        "test":3,
+        "test2":3}
+     ]
+}}

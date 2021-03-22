@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+<ns0:employee xmlns:ns0="http://www.example.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <id>1</id>
+   <name>Employee1</name>
+   <address>
+      <street>101 A Street</street>
+   </address>
+   <phones>
+      <phone>
+         <number>1014455</number>
+         <phoneType>1</phoneType>
+      </phone>
+      <phone>
+         <number>1014466</number>
+         <phoneType>2</phoneType>
+      </phone>
+      <phone>
+         <number>1014477</number>
+         <phoneType>3</phoneType>
+      </phone>
+   </phones>
+</ns0:employee>

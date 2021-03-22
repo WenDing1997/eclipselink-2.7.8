@@ -1,0 +1,42 @@
+--
+-- Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+--
+-- This program and the accompanying materials are made available under the
+-- terms of the Eclipse Public License v. 2.0 which is available at
+-- http://www.eclipse.org/legal/epl-2.0,
+-- or the Eclipse Distribution License v. 1.0 which is available at
+-- http://www.eclipse.org/org/documents/edl-v10.php.
+--
+-- SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+--
+
+CREATE  TYPE XR_VEE_ARRAY_PHONE AS OBJECT (
+  AREACODE VARCHAR2(3),
+  PHONENUMBER VARCHAR2(20),
+  PHONETYPE VARCHAR2(20)
+)|
+CREATE  TYPE XR_VEE_ARRAY_PHONES AS VARRAY(2) OF XR_VEE_ARRAY_PHONE|
+CREATE TABLE XR_VEE_ARRAY_EMP ( 
+  EMPNO NUMBER(4) NOT NULL, 
+  FNAME VARCHAR2(40), 
+  LNAME VARCHAR2(40), 
+  PHONES XR_VEE_ARRAY_PHONES, 
+  PRIMARY KEY (EMPNO) 
+)|
+INSERT INTO XR_VEE_ARRAY_EMP (EMPNO, FNAME, LNAME, PHONES) VALUES (1, 'Mike', 'Norman', XR_VEE_ARRAY_PHONES(XR_VEE_ARRAY_PHONE('613','288-4638','Work'), XR_VEE_ARRAY_PHONE('613','228-1808','Home')))|
+INSERT INTO XR_VEE_ARRAY_EMP (EMPNO, FNAME, LNAME, PHONES) VALUES (2, 'Rick', 'Barkhouse', XR_VEE_ARRAY_PHONES(XR_VEE_ARRAY_PHONE('613','288-zzzz','Work'), XR_VEE_ARRAY_PHONE('613','aaa-bbbb','Home')))|
+CREATE PROCEDURE GET_VEE_ARRAY_EMP(X IN NUMBER, Y OUT SYS_REFCURSOR) AS
+BEGIN
+    OPEN Y FOR SELECT * FROM XR_VEE_ARRAY_EMP WHERE EMPNO=X;
+END;
+|
+CREATE PROCEDURE GET_VEE_ARRAY_EMPS(X OUT SYS_REFCURSOR) AS
+BEGIN
+    OPEN X FOR SELECT * FROM XR_VEE_ARRAY_EMP;
+END;
+|
+CREATE PROCEDURE UPDATE_VEE_ARRAY_PHS(X IN NUMBER, Y IN XR_VEE_ARRAY_PHONES) AS
+BEGIN
+    UPDATE XR_VEE_ARRAY_EMP SET PHONES=Y WHERE EMPNO=X;
+END;
+|

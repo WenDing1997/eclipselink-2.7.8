@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+<company>
+   <name>ACME Incorporated</name>
+   <employees>
+      <id>789</id>
+      <name>Bob Smith</name>
+      <contactInfos>
+         <address>
+            <addressString>123 Main St.</addressString>
+         </address>
+         <phoneNumber>
+            <number>5551212</number>
+         </phoneNumber>
+      </contactInfos>
+      <contactInfos>
+         <address>
+            <addressString>727 Water St.</addressString>
+         </address>
+         <phoneNumber>
+            <number>5551655</number>
+            <owningEmployee xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xsd:int">789</owningEmployee>
+         </phoneNumber>
+      </contactInfos>
+   </employees>
+   <employees>
+      <id>1234</id>
+      <name>Jane Doe</name>
+      <contactInfos>
+         <address>
+            <addressString>711 Maple Ave.</addressString>
+         </address>
+         <phoneNumber>
+            <number>5559876</number>
+            <owningEmployee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="employeePointer">
+               <empId>1234</empId>
+            </owningEmployee>
+         </phoneNumber>
+         <email>
+            <user>Jane.Doe</user>
+            <domain>oracle.com</domain>
+         </email>
+      </contactInfos>
+   </employees>
+</company>

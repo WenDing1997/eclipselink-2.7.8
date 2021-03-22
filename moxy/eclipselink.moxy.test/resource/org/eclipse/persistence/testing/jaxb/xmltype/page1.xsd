@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <xsd:complexType name="a2BCDESomeTest"/>
+   <xsd:complexType name="qNameTest"/>
+   <xsd:complexType name="abbbCD"/>
+   <xsd:complexType name="abc"/>
+   <xsd:complexType name="b"/>
+   <xsd:complexType name="booleanTest"/>
+   <xsd:complexType name="c"/>
+   <xsd:complexType name="class2"/>
+   <xsd:complexType name="abcdEfgh"/>
+   <xsd:complexType name="ab2Cd3Fg4HI"/>
+   <xsd:complexType name="cdnPriceNoAnnotation"/>
+   <xsd:complexType name="usPrice"/>
+   <xsd:element name="a2BCDESomeTest" type="a2BCDESomeTest"/>
+   <xsd:element name="b" type="b"/>
+   <xsd:element name="c" type="c"/>
+   <xsd:element name="booleanTest" type="booleanTest"/>
+   <xsd:element name="usPrice" type="usPrice"/>
+   <xsd:element name="cdnPriceNoAnnotation" type="cdnPriceNoAnnotation"/>
+   <xsd:element name="abc" type="abc"/>
+   <xsd:element name="abbbCD" type="abbbCD"/>
+   <xsd:element name="Page">
+      <xsd:complexType>
+         <xsd:all>
+            <xsd:element minOccurs="0" name="isEmailLinkRequired" type="xsd:string"/>
+         </xsd:all>
+      </xsd:complexType>
+   </xsd:element>
+   <xsd:element name="class2" type="class2"/>
+   <xsd:element name="ab2cd3fg4HI" type="ab2Cd3Fg4HI"/>
+   <xsd:element name="qNameTest" type="qNameTest"/>
+   <xsd:element name="abcdEfgh" type="abcdEfgh"/>
+</xsd:schema>

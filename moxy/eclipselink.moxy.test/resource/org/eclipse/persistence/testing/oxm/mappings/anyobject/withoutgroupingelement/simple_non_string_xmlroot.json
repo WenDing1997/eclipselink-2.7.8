@@ -1,0 +1,6 @@
+{"root":{
+    "theFloat":{
+       "xsi.type":"float",
+       "value":22.0
+       }
+}}

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+<ns0:root xmlns:ns0="rootNamespace" xmlns:ns5="uri1">
+    <baseTypeThing xmlns:ns1="someNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns1:subType">
+        <ns5:subTypeProp>10</ns5:subTypeProp>
+    </baseTypeThing>
+        <baseTypeList xmlns:ns1="someNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns1:subType">
+           <ns5:subTypeProp>10</ns5:subTypeProp>
+      </baseTypeList>
+    <baseTypeList xmlns:ns2="anotherNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:anotherSubType">
+    </baseTypeList>
+    <baseTypeList xmlns:ns3="someNamespaceLevel2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:subTypeLevel2">
+        <ns5:baseProp>boo</ns5:baseProp>
+           <ns5:subTypeProp>0</ns5:subTypeProp>
+    </baseTypeList>
+    <baseTypeList xmlns:ns1="someNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns1:subType">
+        <ns5:subTypeProp>10</ns5:subTypeProp>
+    </baseTypeList>
+    <baseTypeList xmlns:ns4="uri3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns4:anotherPackageSubType">
+        <ns5:subTypeProp>0</ns5:subTypeProp>
+    </baseTypeList>
+    <objectList xmlns:ns1="someNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns1:subType">
+        <ns5:subTypeProp>10</ns5:subTypeProp>
+    </objectList>
+    <objectList xmlns:ns2="anotherNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:anotherSubType">
+    </objectList>
+    <objectList xmlns:ns3="someNamespaceLevel2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:subTypeLevel2">
+        <ns5:baseProp>boo</ns5:baseProp>
+        <ns5:subTypeProp>0</ns5:subTypeProp>
+    </objectList>
+    <objectList xmlns:ns4="someNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns4:subType">
+        <ns5:subTypeProp>10</ns5:subTypeProp>
+    </objectList>
+    <objectList xmlns:ns6="uri3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns6:anotherPackageSubType">
+        <ns5:subTypeProp>0</ns5:subTypeProp>
+    </objectList>
+    <objectList xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xsd:string">string test</objectList>
+    <objectList xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xsd:int">500</objectList>
+    <choice>
+        <another-package-subtype-choice>
+            <ns5:subTypeProp>0</ns5:subTypeProp>
+        </another-package-subtype-choice>
+        <subtype-level2-choice>
+            <ns5:baseProp>boo</ns5:baseProp>
+            <ns5:subTypeProp>0</ns5:subTypeProp>
+        </subtype-level2-choice>
+        <string-choice>choice string test</string-choice>
+        <integer-choice>500</integer-choice>
+    </choice>
+</ns0:root>

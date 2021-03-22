@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+<ns0:employee id="66" xmlns:ns0="http://www.example.com/employees" xmlns:prj="http://www.example.com/projects">
+    <projects>
+        <prj:project prj:managerId="99">
+            <name>XML External Metadata Support</name>
+        </prj:project>
+    </projects>
+    <project-id>999</project-id>
+    <info>
+        <personal-info>
+            <first-name>Joe</first-name>
+            <last-name>Oracle</last-name>
+        </personal-info>
+    </info>
+    <pieces-of-data>
+        <data>data one</data>
+        <data>data two</data>
+    </pieces-of-data>
+    <private-data>This is some private data</private-data>
+    <character-data><![CDATA[<characters>a b c d e f g</characters>]]></character-data>
+    <some-string xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true" />
+    <a-string/>
+</ns0:employee>

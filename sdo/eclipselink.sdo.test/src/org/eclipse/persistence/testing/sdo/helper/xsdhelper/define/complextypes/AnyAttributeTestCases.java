@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) 1998, 2018 Oracle and/or its affiliates. All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0,
+ * or the Eclipse Distribution License v. 1.0 which is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+ */
+
+// Contributors:
+//     bdoughan - February 3/2010 - 2.0.1 - Initial implementation
+package org.eclipse.persistence.testing.sdo.helper.xsdhelper.define.complextypes;
+
+import commonj.sdo.Type;
+import org.eclipse.persistence.testing.sdo.helper.xsdhelper.XSDHelperTestCases;
+
+public class AnyAttributeTestCases extends XSDHelperTestCases {
+
+    public AnyAttributeTestCases(String name) {
+        super(name);
+    }
+
+    public void testChildIsOpen() {
+        String xsdSchema = getSchema("org/eclipse/persistence/testing/sdo/helper/xsdhelper/define/complextypes/AnyAttribute.xsd");
+        xsdHelper.define(xsdSchema);
+
+        Type baseType = typeHelper.getType("urn:any-attribute", "base");
+        assertTrue(baseType.isOpen());
+
+        Type extendedChildType = typeHelper.getType("urn:any-attribute", "extended-child");
+        assertTrue(extendedChildType.isOpen());
+
+        Type restrictedChildType = typeHelper.getType("urn:any-attribute", "restricted-child");
+        assertTrue(restrictedChildType.isOpen());
+    }
+
+}

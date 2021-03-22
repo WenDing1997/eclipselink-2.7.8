@@ -1,0 +1,26 @@
+<!--
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0 which is available at
+    http://www.eclipse.org/legal/epl-2.0,
+    or the Eclipse Distribution License v. 1.0 which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
+
+-->
+
+<jxb:bindings version="1.0" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" xmlns:jxb="http://java.sun.com/xml/ns/jaxb" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <jxb:bindings schemaLocation="contextcreation.xsd" node="/xs:schema">
+
+        <!-- Rename the 'name' element to 'last-name-comma-first-name' -->
+        <jxb:bindings node="//xs:complexType[@name='person']">
+            <jxb:bindings node=".//xs:element[@name='name']">
+                <jxb:property name="last-name-comma-first-name"/>
+            </jxb:bindings>
+        </jxb:bindings>
+
+    </jxb:bindings>
+</jxb:bindings>
