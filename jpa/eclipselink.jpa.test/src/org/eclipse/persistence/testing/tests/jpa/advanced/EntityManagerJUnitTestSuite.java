@@ -35,19 +35,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
+import java.util.concurrent.locks.Lock;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
@@ -1675,6 +1664,279 @@ public class EntityManagerJUnitTestSuite extends JUnitTestCase {
         }
     }
 
+    public void testConcurrency1(){
+        if (!isOnServer()) {
+            // Design the test first
+            EntityManager em = createEntityManager();
+            Employee employee1 = new Employee("FirstName1", "LastName1");
+            employee1.setSalary(1000);
+            Employee employee2 = new Employee("FirstName2", "LastName2");
+            employee2.setSalary(2000);
+            Employee employee3 = new Employee("FirstName3", "LastName3");
+            employee3.setSalary(7000);
+            beginTransaction(em);
+            em.persist(employee1);
+            em.persist(employee2);
+            em.persist(employee3);
+            commitTransaction(em);
+            // Global invariant: salary sum = 10000
+            int salarySum = 10000;
+            int inc = 500;
+            int dec = - 500;
+            try {
+                Employee threadEmployee1 = employee1;
+                Employee threadEmployee2 = employee2;
+                Employee threadEmployee3 = employee3;
+                Thread t1 = new Thread() {
+                    public void run() {
+                        boolean success = false;
+                        EntityManager em1 = createEntityManager();
+                        while (!success) {
+                            try {
+                                beginTransaction(em1);
+                                Employee em1Employee1 = em1.find(Employee.class, threadEmployee1.getId());
+                                Employee em1Employee2 = em1.find(Employee.class, threadEmployee2.getId());
+                                Employee em1Employee3 = em1.find(Employee.class, threadEmployee3.getId());
+                                em1.lock(em1Employee3, LockModeType.OPTIMISTIC);
+                                em1.lock(em1Employee1, LockModeType.OPTIMISTIC);
+                                em1.lock(em1Employee2, LockModeType.OPTIMISTIC);
+                                em1Employee1.setSalary(em1Employee1.getSalary() + inc);
+                                em1Employee2.setSalary(em1Employee2.getSalary() + inc);
+                                commitTransaction(em1);
+                                closeEntityManager(em1);
+                                success = true;
+                            } catch (RuntimeException e) {
+                                if (isTransactionActive(em1)) {
+                                    rollbackTransaction(em1);
+                                }
+                            }
+                        }
+
+                    }
+                };
+                t1.start();
+                Thread t2 = new Thread() {
+                    public void run() {
+                        boolean success = false;
+                        EntityManager em1 = createEntityManager();
+                        while (!success) {
+                            try {
+                                sleep(3000);
+                                beginTransaction(em1);
+                                Employee em1Employee2 = em1.find(Employee.class, threadEmployee2.getId());
+                                Employee em1Employee3 = em1.find(Employee.class, threadEmployee3.getId());
+                                Employee em1Employee1 = em1.find(Employee.class, threadEmployee1.getId());
+                                em1.lock(em1Employee1, LockModeType.OPTIMISTIC);
+                                em1.lock(em1Employee2, LockModeType.OPTIMISTIC);
+                                em1.lock(em1Employee3, LockModeType.OPTIMISTIC);
+                                em1Employee2.setSalary(em1Employee2.getSalary() + dec);
+                                em1Employee3.setSalary(em1Employee3.getSalary() + dec);
+                                commitTransaction(em1);
+                                closeEntityManager(em1);
+                                success = true;
+                            } catch (RuntimeException e) {
+                                if (isTransactionActive(em1)) {
+                                    rollbackTransaction(em1);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                };
+                t2.start();
+                t1.join();
+                t2.join();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            EntityManager em1 = createEntityManager();
+            beginTransaction(em1);
+            employee1 = em1.find(Employee.class, employee1.getId());
+            employee2 = em1.find(Employee.class, employee2.getId());
+            employee3 = em1.find(Employee.class, employee3.getId());
+            int employee1Salary = employee1.getSalary();
+            int employee2Salary = employee2.getSalary();
+            int employee3Salary = employee3.getSalary();
+            assertEquals(salarySum, employee1Salary + employee2Salary + employee3Salary);
+            commitTransaction(em1);
+            closeEntityManager(em1);
+        }
+    }
+
+    // 2 threads, 3 objects
+    public void testConcurrency2(){
+        if (!isOnServer()) {
+            EntityManager em = createEntityManager();
+            Employee employee1 = new Employee("FirstName1", "LastName1");
+            employee1.setSalary(1000);
+            Employee employee2 = new Employee("FirstName2", "LastName2");
+            employee2.setSalary(2000);
+            Employee employee3 = new Employee("FirstName3", "LastName3");
+            employee3.setSalary(7000);
+            beginTransaction(em);
+            em.persist(employee1);
+            em.persist(employee2);
+            em.persist(employee3);
+            commitTransaction(em);
+            // Global invariant: salary sum = 10000
+            int salarySum = 10000;
+            int e1Id = employee1.getId();
+            int e2Id = employee2.getId();
+            int e3Id = employee3.getId();
+
+            List<Integer> employeeIds = Arrays.asList(e1Id, e2Id, e3Id);
+            List<Integer> salaryChanges = Arrays.asList(500, -500, 0);
+            RunnableTest r1 = new RunnableTest(employeeIds, salaryChanges);
+//            employeeIds = Arrays.asList(e2Id, e3Id);
+            salaryChanges = Arrays.asList(0, -300, 300);
+            RunnableTest r2 = new RunnableTest(employeeIds, salaryChanges);
+            List<RunnableTest> runnableTests = Arrays.asList(r1, r2);
+            List<Thread> threads = new ArrayList<>();
+            for (RunnableTest rt : runnableTests) {
+                Thread t = new Thread(rt);
+                threads.add(t);
+                t.start();
+            }
+            try {
+                for (Thread t : threads) {
+                    t.join();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            EntityManager em1 = createEntityManager();
+            beginTransaction(em1);
+            int employee1Salary = em1.find(Employee.class, e1Id).getSalary();
+            int employee2Salary = em1.find(Employee.class, e2Id).getSalary();
+            int employee3Salary = em1.find(Employee.class, e3Id).getSalary();
+            commitTransaction(em1);
+            closeEntityManager(em1);
+            assertEquals(salarySum, employee1Salary + employee2Salary + employee3Salary);
+        }
+    }
+
+    // 4 threads
+    public void testConcurrency3(){
+        if (!isOnServer()) {
+            EntityManager em = createEntityManager();
+            Employee employee1 = new Employee("FirstName1", "LastName1");
+            employee1.setSalary(1000);
+            Employee employee2 = new Employee("FirstName2", "LastName2");
+            employee2.setSalary(2000);
+            Employee employee3 = new Employee("FirstName3", "LastName3");
+            employee3.setSalary(7000);
+            beginTransaction(em);
+            em.persist(employee1);
+            em.persist(employee2);
+            em.persist(employee3);
+            commitTransaction(em);
+            // Global invariant: salary sum = 10000
+            int salarySum = 10000;
+            int e1Id = employee1.getId();
+            int e2Id = employee2.getId();
+            int e3Id = employee3.getId();
+
+            List<Integer> employeeIds = Arrays.asList(e1Id, e2Id, e3Id);
+            List<Integer> salaryChanges = Arrays.asList(100, 100, -200);
+            RunnableTest r1 = new RunnableTest(employeeIds, salaryChanges);
+            salaryChanges = Arrays.asList(0, -300, 300);
+            RunnableTest r2 = new RunnableTest(employeeIds, salaryChanges);
+            salaryChanges = Arrays.asList(100, 0, -100);
+            RunnableTest r3 = new RunnableTest(employeeIds, salaryChanges);
+            salaryChanges = Arrays.asList(100, -100, 0);
+            RunnableTest r4 = new RunnableTest(employeeIds, salaryChanges);
+            List<RunnableTest> runnableTests = Arrays.asList(r1, r2, r3, r4);
+            List<Thread> threads = new ArrayList<>();
+            for (RunnableTest rt : runnableTests) {
+                Thread t = new Thread(rt);
+                threads.add(t);
+                t.start();
+            }
+            try {
+                for (Thread t : threads) {
+                    t.join();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            EntityManager em1 = createEntityManager();
+            beginTransaction(em1);
+            int employee1Salary = em1.find(Employee.class, e1Id).getSalary();
+            int employee2Salary = em1.find(Employee.class, e2Id).getSalary();
+            int employee3Salary = em1.find(Employee.class, e3Id).getSalary();
+            commitTransaction(em1);
+            closeEntityManager(em1);
+            assertEquals(salarySum, employee1Salary + employee2Salary + employee3Salary);
+        }
+    }
+
+    private void modifySalary(EntityManager em, Integer employeeId, int amount) {
+        Employee employee = em.find(Employee.class, employeeId);
+        em.lock(employee, LockModeType.OPTIMISTIC);
+        employee.setSalary(employee.getSalary() + amount);
+    }
+
+    class RunnableTest implements Runnable {
+        private List<Integer> employeeIds;
+        private List<Integer> salaryChanges;
+
+        RunnableTest(List<Integer> employeeIds, List<Integer> salaryChanges) {
+            this.employeeIds = employeeIds;
+            this.salaryChanges = salaryChanges;
+        }
+
+        @Override
+        public void run() {
+            boolean success = false;
+            EntityManager em = createEntityManager();
+            while (!success) {
+                try {
+                    beginTransaction(em);
+                    for (int i = 0; i < employeeIds.size(); i++) {
+                        modifySalary(em, employeeIds.get(i), salaryChanges.get(i));
+                    }
+                    commitTransaction(em);
+                    closeEntityManager(em);
+                    success = true;
+                } catch (RuntimeException e) {
+                    if (isTransactionActive(em)) {
+                        rollbackTransaction(em);
+                    }
+                }
+            }
+        }
+    }
+
+    // em1 upon commit should fail under strong consistency/Postgres serializability
+    public void testSerializability(){
+        if (!isOnServer()) {
+            EntityManager em = createEntityManager();
+            Employee employee1 = new Employee("AAA", "AAA");
+            Employee employee2 = new Employee("AAA", "BBB");
+            beginTransaction(em);
+            em.persist(employee1);
+            em.persist(employee2);
+            commitTransaction(em);
+            int e1Id = employee1.getId();
+            int e2Id = employee2.getId();
+
+            EntityManager em1 = createEntityManager();
+            EntityManager em2 = createEntityManager();
+            beginTransaction(em1);
+            beginTransaction(em2);
+            List result = em1.createQuery("Select employee from Employee employee where employee.firstName = 'AAA'").getResultList();
+            for (Object o : result) {
+                Employee e = (Employee) o;
+                e.setSalary(1000);
+            }
+            Employee employee3 = new Employee("AAA", "CCC");
+            em2.persist(employee3);
+            commitTransaction(em2);
+            commitTransaction(em1);
+        }
+    }
+
     public void testOPTIMISTICLock() {
         // Cannot create parallel entity managers in the server.
         if (! isOnServer()) {
@@ -1704,6 +1966,95 @@ public class EntityManagerJUnitTestSuite extends JUnitTestCase {
             try {
                 employee = em.find(Employee.class, employee.getId());
                 em.lock(employee, LockModeType.OPTIMISTIC);
+                beginTransaction(em2);
+
+                try {
+                    Employee employee2 = em2.find(Employee.class, employee.getId());
+                    employee2.setFirstName("Michael");
+                    commitTransaction(em2);
+                } catch (RuntimeException ex) {
+                    if (isTransactionActive(em2)) {
+                        rollbackTransaction(em2);
+                    }
+
+                    throw ex;
+                } finally {
+                    closeEntityManager(em2);
+                }
+
+                try {
+                    em.flush();
+                } catch (PersistenceException exception) {
+                    if (exception instanceof OptimisticLockException){
+                        optimisticLockException = exception;
+                    } else {
+                        throw exception;
+                    }
+                }
+
+                rollbackTransaction(em);
+            } catch (RuntimeException ex) {
+                if (isTransactionActive(em)){
+                    rollbackTransaction(em);
+                }
+
+                closeEntityManager(em);
+                throw ex;
+            }
+
+            try {
+                beginTransaction(em);
+                employee = em.find(Employee.class, employee.getId());
+                em.remove(employee);
+                commitTransaction(em);
+            } catch (RuntimeException ex) {
+                if (isTransactionActive(em)) {
+                    rollbackTransaction(em);
+                }
+
+                closeEntityManager(em);
+                throw ex;
+            }
+
+            assertFalse("Proper exception not thrown when EntityManager.lock(object, OPTIMISTIC) is used.", optimisticLockException == null);
+        }
+    }
+
+    public void testOPTIMISTICLock2() {
+        // Cannot create parallel entity managers in the server.
+        if (! isOnServer()) {
+            EntityManager em = createEntityManager();
+            beginTransaction(em);
+            Employee employee = null;
+            Employee employee3 = null;
+
+            try {
+                employee = new Employee();
+                employee.setFirstName("Harry");
+                employee.setLastName("Madsen");
+                em.persist(employee);
+                employee3 = new Employee();
+                employee3.setFirstName("Wenyu");
+                employee3.setLastName("Ding");
+                em.persist(employee3);
+                commitTransaction(em);
+            } catch (RuntimeException ex) {
+                if (isTransactionActive(em)) {
+                    rollbackTransaction(em);
+                }
+
+                closeEntityManager(em);
+                throw ex;
+            }
+
+            EntityManager em2 = createEntityManager();
+            Exception optimisticLockException = null;
+            beginTransaction(em);
+
+            try {
+                employee = em.find(Employee.class, employee.getId());
+                em.lock(employee, LockModeType.OPTIMISTIC);
+                em.lock(employee3, LockModeType.OPTIMISTIC);
                 beginTransaction(em2);
 
                 try {

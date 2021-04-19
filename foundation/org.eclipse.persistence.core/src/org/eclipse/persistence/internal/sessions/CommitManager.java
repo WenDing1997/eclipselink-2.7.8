@@ -14,9 +14,14 @@
 //     Oracle - initial API and implementation from Oracle TopLink
 package org.eclipse.persistence.internal.sessions;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+
+import org.eclipse.persistence.expressions.ExpressionBuilder;
+import org.eclipse.persistence.internal.descriptors.OptimisticLockingPolicy;
 import org.eclipse.persistence.mappings.*;
 import org.eclipse.persistence.internal.databaseaccess.DatasourceCall;
 import org.eclipse.persistence.internal.helper.*;
@@ -27,7 +32,6 @@ import org.eclipse.persistence.internal.localization.*;
 import org.eclipse.persistence.internal.queries.DatabaseQueryMechanism;
 import org.eclipse.persistence.descriptors.ClassDescriptor;
 
-import javax.persistence.criteria.CriteriaBuilder;
 
 /**
  * This class maintains a commit stack and resolves circular references.
@@ -256,6 +260,114 @@ public class CommitManager {
                     Collections.sort((List)changes);
                 }
             }
+            String SQLCallString = null;
+            Map<Object, Object> objectIdtoVersion = new HashMap<>();
+            Class objectClass = null;
+            String objectIdFieldName = null;
+            // Changes to write: includes actual changes and "updates" for read locks
+            for (ObjectChangeSet changeSetToWrite : changes) {
+                Object objectToWrite = changeSetToWrite.getUnitOfWorkClone();
+                if (descriptor == null) {
+                    descriptor = session.getDescriptor(objectToWrite);
+                }
+                if (!isProcessedCommit(objectToWrite)) {
+                    List<org.eclipse.persistence.sessions.changesets.ChangeRecord> changeSetToWriteChanges = changeSetToWrite.changes;
+                    if (changeSetToWrite.isNew() || (changeSetToWriteChanges != null && !changeSetToWriteChanges.isEmpty())) {
+                        // Original code that issues insert and update queries
+                        WriteObjectQuery commitQuery = null;
+                        if (changeSetToWrite.isNew()) {
+                            commitQuery = new InsertObjectQuery();
+                        } else {
+                            commitQuery = new UpdateObjectQuery();
+                        }
+                        commitQuery.setIsExecutionClone(true);
+                        commitQuery.setDescriptor(descriptor);
+                        commitQuery.setObjectChangeSet(changeSetToWrite);
+                        commitQuery.setObject(objectToWrite);
+                        commitQuery.cascadeOnlyDependentParts();
+                        session.executeQuery(commitQuery);
+                    } else {
+                        // Use a long OR select query to handle read locks
+                        objectClass = objectToWrite.getClass();
+                        OptimisticLockingPolicy optimisticLockingPolicy = descriptor.getOptimisticLockingPolicy();
+                        Object objectVersion = optimisticLockingPolicy.getWriteLockValue(objectToWrite, changeSetToWrite.id, session);
+                        Object objectId = null;
+                        Object objectIdSQL = null;
+                        try {
+                            String idAttributeName = descriptor.getMappings().get(0).getAttributeName(); // ID or NETID
+                            Field fieldId = objectClass.getDeclaredField(idAttributeName);
+                            fieldId.setAccessible(true);
+                            objectId = fieldId.get(objectToWrite);
+                            if (objectId instanceof String) {
+                                objectIdSQL = "'" + objectId + "'";
+                            } else {
+                                objectIdSQL = objectId;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        objectIdtoVersion.put(objectId, objectVersion);
+                        objectIdFieldName = descriptor.getPrimaryKeyFields().get(0).getName();
+                        // Does not support selecting from multiple tables
+                        if (SQLCallString == null) {
+                            SQLCallString = "SELECT " + objectIdFieldName + ", VERSION FROM " + descriptor.getDefaultTable().getName() + " WHERE " + objectIdFieldName + " = " + objectIdSQL;
+                        } else {
+                            SQLCallString += " OR " + objectIdFieldName + " = " + objectIdSQL;
+//                            SQLCallString += " UNION ALL " + "SELECT " + objectIdFieldName + ", VERSION FROM " + descriptor.getDefaultTable().getName() + " WHERE " + objectIdFieldName + " = " + objectIdSQL;
+                        }
+                    }
+                }
+            }
+            if (SQLCallString != null) {
+                // Check version matches for every object in batch select
+                Call call = new SQLCall(SQLCallString);
+                Vector<ArrayRecord> resultRows = session.executeSelectingCall(call);
+                for (ArrayRecord arrayRecord : resultRows) {
+                    Object id = arrayRecord.get(objectIdFieldName);
+                    Long version = (Long) arrayRecord.get("VERSION");
+                    if (id instanceof Long) {
+                        Object idInt = Math.toIntExact((Long)id);
+                        Object versionObject = objectIdtoVersion.get(idInt);
+                        if (versionObject instanceof Integer) {
+                            int versionInMap = (int) versionObject;
+                            if (version == null || !(version == versionInMap)) {
+                                throw OptimisticLockException.objectChangedSinceLastReadWhenUpdating(id);
+                            }
+                        } else if (versionObject instanceof Long) {
+                            Long versionInMap = (Long) versionObject;
+                            if (version == null || !(version.equals(versionInMap))) {
+                                throw OptimisticLockException.objectChangedSinceLastReadWhenUpdating(id);
+                            }
+                        }
+
+                    } else if (id instanceof Integer) {
+                        Object idInt = (Integer)id;
+                        Object versionInMap = objectIdtoVersion.get(idInt);
+                        if (version == null || !version.equals(versionInMap)) {
+                            throw OptimisticLockException.objectChangedSinceLastReadWhenUpdating(id);
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
+    protected void commitChangedObjectsForClassWithChangeSet1(UnitOfWorkChangeSet uowChangeSet, Class theClass) {
+        Map<ObjectChangeSet, ObjectChangeSet> objectChangesList = uowChangeSet.getObjectChanges().get(theClass);
+        if (objectChangesList != null) {// may be no changes for that class type.
+            ClassDescriptor descriptor = null;
+            AbstractSession session = getSession();
+            Collection<ObjectChangeSet> changes = objectChangesList.values();
+            CommitOrderType order = ((UnitOfWorkImpl)session).getCommitOrder();
+            if (order != CommitOrderType.NONE) {
+                changes = new ArrayList(objectChangesList.values());
+                if (order == CommitOrderType.CHANGES) {
+                    Collections.sort((List)changes, new ObjectChangeSet.ObjectChangeSetComparator());
+                } else {
+                    Collections.sort((List)changes);
+                }
+            }
             for (ObjectChangeSet changeSetToWrite : changes) {
                 Object objectToWrite = changeSetToWrite.getUnitOfWorkClone();
                 if (descriptor == null) {
@@ -263,14 +375,19 @@ public class CommitManager {
                 }
                 if (!isProcessedCommit(objectToWrite)) {
                     // Commit and resume on failure can cause a new change set to be in existing, so need to check here.
-                    List<org.eclipse.persistence.sessions.changesets.ChangeRecord> changeSetToWriteChanges = changeSetToWrite.changes;
-                    if (changeSetToWrite.isNew() || (changeSetToWriteChanges != null && !changeSetToWriteChanges.isEmpty())) {
-                        WriteObjectQuery commitQuery = null;
-                        if (changeSetToWrite.isNew()) {
-                            commitQuery = new InsertObjectQuery();
-                        } else {
-                            commitQuery = new UpdateObjectQuery();
-                        }
+                    WriteObjectQuery commitQuery = null;
+                    if (changeSetToWrite.isNew()) {
+                        commitQuery = new InsertObjectQuery();
+                        commitQuery.setIsExecutionClone(true);
+                        commitQuery.setDescriptor(descriptor);
+                        commitQuery.setObjectChangeSet(changeSetToWrite);
+                        commitQuery.setObject(objectToWrite);
+                        commitQuery.cascadeOnlyDependentParts();
+                        // removed checking session type to set cascade level
+                        // will always be a unitOfWork so we need to cascade dependent parts
+                        session.executeQuery(commitQuery);
+                    } else if (!changeSetToWrite.getChanges().isEmpty()) {
+                        commitQuery = new UpdateObjectQuery();
                         commitQuery.setIsExecutionClone(true);
                         commitQuery.setDescriptor(descriptor);
                         commitQuery.setObjectChangeSet(changeSetToWrite);
@@ -283,30 +400,24 @@ public class CommitManager {
                         ReadObjectQuery query = new ReadObjectQuery();
                         query.setIsExecutionClone(true);
                         query.setDescriptor(descriptor);
-                        Class objectClass = objectToWrite.getClass();
-                        Method method = null;
-                        Integer objectVersion = null;
-                        try {
-                            method = objectClass.getDeclaredMethod("getVersion");
-                            objectVersion = (Integer) method.invoke(objectToWrite);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        query.setSelectionObject(objectToWrite);
-                        query.refreshIdentityMapResult();
-                        query.cascadeAllParts();
+                        query.setReferenceClass(objectToWrite.getClass());
+                        query.setIsReadOnly(true);
                         query.dontCheckCache();
-                        Object result = session.executeQuery(query);
-                        Integer resultVersion = null;
-                        try {
-                            resultVersion = (Integer) method.invoke(result);
-                            if (resultVersion == null || !objectVersion.equals(resultVersion)) {
-                                throw OptimisticLockException.objectChangedSinceLastReadWhenUpdating(result);
+                        OptimisticLockingPolicy optimisticLockingPolicy = descriptor.getOptimisticLockingPolicy();
+                        if (optimisticLockingPolicy != null) {
+                            ExpressionBuilder builder = query.getExpressionBuilder();
+                            query.setSelectionCriteria(builder.getField(optimisticLockingPolicy.getWriteLockField()).equal(builder.getParameter(optimisticLockingPolicy.getWriteLockField())).and(
+                                    builder.getField(descriptor.getPrimaryKeyFields().get(0)).equal(builder.getParameter(descriptor.getPrimaryKeyFields().get(0)))
+                            ));
+                            query.addArgument(optimisticLockingPolicy.getWriteLockField().getQualifiedName());
+                            query.addArgument(descriptor.getPrimaryKeyFields().get(0).getQualifiedName());
+                            List args = new ArrayList();
+                            args.add(optimisticLockingPolicy.getWriteLockValue(objectToWrite, changeSetToWrite.id, session));
+                            args.add(changeSetToWrite.id);
+                            Object result = session.executeQuery(query, args);
+                            if (result == null) {
+                                throw OptimisticLockException.objectChangedSinceLastReadWhenUpdating(query);
                             }
-                        } catch (IllegalAccessException e) {
-                            e.printStackTrace();
-                        } catch (InvocationTargetException e) {
-                            e.printStackTrace();
                         }
                     }
                 }
