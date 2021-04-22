@@ -264,6 +264,7 @@ public class CommitManager {
             Map<Object, Object> objectIdtoVersion = new HashMap<>();
             Class objectClass = null;
             String objectIdFieldName = null;
+            String mode = "LongSelectWithIn";
             // Changes to write: includes actual changes and "updates" for read locks
             for (ObjectChangeSet changeSetToWrite : changes) {
                 Object objectToWrite = changeSetToWrite.getUnitOfWorkClone();
@@ -309,17 +310,37 @@ public class CommitManager {
                         objectIdtoVersion.put(objectId, objectVersion);
                         objectIdFieldName = descriptor.getPrimaryKeyFields().get(0).getName();
                         // Does not support selecting from multiple tables
-                        if (SQLCallString == null) {
-                            SQLCallString = "SELECT " + objectIdFieldName + ", VERSION FROM " + descriptor.getDefaultTable().getName() + " WHERE " + objectIdFieldName + " = " + objectIdSQL;
-                        } else {
-                            SQLCallString += " OR " + objectIdFieldName + " = " + objectIdSQL;
-//                            SQLCallString += " UNION ALL " + "SELECT " + objectIdFieldName + ", VERSION FROM " + descriptor.getDefaultTable().getName() + " WHERE " + objectIdFieldName + " = " + objectIdSQL;
+                        switch (mode) {
+                            case "LongSelectWithOr":
+                                if (SQLCallString == null) {
+                                    SQLCallString = "SELECT " + objectIdFieldName + ", VERSION FROM " + descriptor.getDefaultTable().getName() + " WHERE " + objectIdFieldName + " = " + objectIdSQL;
+                                } else {
+                                    SQLCallString += " OR " + objectIdFieldName + " = " + objectIdSQL;
+                                }
+                                break;
+                            case "LongSelectWithUnionAll":
+                                if (SQLCallString == null) {
+                                    SQLCallString = "SELECT " + objectIdFieldName + ", VERSION FROM " + descriptor.getDefaultTable().getName() + " WHERE " + objectIdFieldName + " = " + objectIdSQL;
+                                } else {
+                                    SQLCallString += " UNION ALL " + "SELECT " + objectIdFieldName + ", VERSION FROM " + descriptor.getDefaultTable().getName() + " WHERE " + objectIdFieldName + " = " + objectIdSQL;
+                                }
+                                break;
+                            case "LongSelectWithIn":
+                                if (SQLCallString == null) {
+                                    SQLCallString = "SELECT " + objectIdFieldName + ", VERSION FROM " + descriptor.getDefaultTable().getName() + " WHERE " + objectIdFieldName + " IN (" + objectIdSQL;
+                                } else {
+                                    SQLCallString += ", " + objectIdSQL;
+                                }
+                                break;
                         }
                     }
                 }
             }
             if (SQLCallString != null) {
                 // Check version matches for every object in batch select
+                if (mode.equals("LongSelectWithIn")) {
+                    SQLCallString += ")";
+                }
                 Call call = new SQLCall(SQLCallString);
                 Vector<ArrayRecord> resultRows = session.executeSelectingCall(call);
                 for (ArrayRecord arrayRecord : resultRows) {
