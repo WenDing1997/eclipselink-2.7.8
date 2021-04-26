@@ -1779,6 +1779,7 @@ public class EntityManagerJUnitTestSuite extends JUnitTestCase {
             em.persist(employee2);
             em.persist(employee3);
             commitTransaction(em);
+            closeEntityManager(em);
             // Global invariant: salary sum = 10000
             int salarySum = 10000;
             int e1Id = employee1.getId();
@@ -1831,6 +1832,7 @@ public class EntityManagerJUnitTestSuite extends JUnitTestCase {
             em.persist(employee2);
             em.persist(employee3);
             commitTransaction(em);
+            closeEntityManager(em);
             // Global invariant: salary sum = 10000
             int salarySum = 10000;
             int e1Id = employee1.getId();
@@ -1868,6 +1870,62 @@ public class EntityManagerJUnitTestSuite extends JUnitTestCase {
             commitTransaction(em1);
             closeEntityManager(em1);
             assertEquals(salarySum, employee1Salary + employee2Salary + employee3Salary);
+        }
+    }
+
+    // test to check if "ERROR: could not serialize access due to concurrent update" is thrown with one update query
+    public void testConcurrentUpdate(){
+        if (!isOnServer()) {
+            EntityManager em = createEntityManager();
+            Employee employee1 = new Employee("FirstName1", "LastName1");
+            employee1.setSalary(1000);
+            Employee employee2 = new Employee("FirstName2", "LastName2");
+            employee2.setSalary(2000);
+            Employee employee3 = new Employee("FirstName3", "LastName3");
+            employee3.setSalary(7000);
+            beginTransaction(em);
+            em.persist(employee1);
+            em.persist(employee2);
+            em.persist(employee3);
+            commitTransaction(em);
+            closeEntityManager(em);
+            // Global invariant: salary sum = 10000
+            int salarySum = 10000;
+            int e1Id = employee1.getId();
+            int e2Id = employee2.getId();
+            int e3Id = employee3.getId();
+
+            List<Integer> employeeIds = Arrays.asList(e1Id, e2Id, e3Id);
+            List<Integer> salaryChanges = Arrays.asList(100, 200, 300);
+            RunnableTest r1 = new RunnableTest(employeeIds, salaryChanges);
+            salaryChanges = Arrays.asList(10, 20, 30);
+            RunnableTest r2 = new RunnableTest(employeeIds, salaryChanges);
+            salaryChanges = Arrays.asList(100, 0, -100);
+            RunnableTest r3 = new RunnableTest(employeeIds, salaryChanges);
+            salaryChanges = Arrays.asList(100, -100, 0);
+            RunnableTest r4 = new RunnableTest(employeeIds, salaryChanges);
+            List<RunnableTest> runnableTests = Arrays.asList(r1, r2, r3);
+            List<Thread> threads = new ArrayList<>();
+            for (RunnableTest rt : runnableTests) {
+                Thread t = new Thread(rt);
+                threads.add(t);
+                t.start();
+            }
+            try {
+                for (Thread t : threads) {
+                    t.join();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            EntityManager em1 = createEntityManager();
+            beginTransaction(em1);
+            int employee1Salary = em1.find(Employee.class, e1Id).getSalary();
+            int employee2Salary = em1.find(Employee.class, e2Id).getSalary();
+            int employee3Salary = em1.find(Employee.class, e3Id).getSalary();
+            commitTransaction(em1);
+            closeEntityManager(em1);
+//            assertEquals(salarySum, employee1Salary + employee2Salary + employee3Salary);
         }
     }
 
@@ -1918,6 +1976,7 @@ public class EntityManagerJUnitTestSuite extends JUnitTestCase {
             em.persist(employee1);
             em.persist(employee2);
             commitTransaction(em);
+            closeEntityManager(em);
             int e1Id = employee1.getId();
             int e2Id = employee2.getId();
 
@@ -1933,7 +1992,9 @@ public class EntityManagerJUnitTestSuite extends JUnitTestCase {
             Employee employee3 = new Employee("AAA", "CCC");
             em2.persist(employee3);
             commitTransaction(em2);
+            closeEntityManager(em2);
             commitTransaction(em1);
+            closeEntityManager(em1);
         }
     }
 
