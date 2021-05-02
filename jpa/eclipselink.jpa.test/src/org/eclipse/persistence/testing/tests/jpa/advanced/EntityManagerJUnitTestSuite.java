@@ -1758,9 +1758,12 @@ public class EntityManagerJUnitTestSuite extends JUnitTestCase {
             int employee1Salary = employee1.getSalary();
             int employee2Salary = employee2.getSalary();
             int employee3Salary = employee3.getSalary();
-            assertEquals(salarySum, employee1Salary + employee2Salary + employee3Salary);
+            em1.remove(employee1);
+            em1.remove(employee2);
+            em1.remove(employee3);
             commitTransaction(em1);
             closeEntityManager(em1);
+            assertEquals(salarySum, employee1Salary + employee2Salary + employee3Salary);
         }
     }
 
@@ -1811,6 +1814,12 @@ public class EntityManagerJUnitTestSuite extends JUnitTestCase {
             int employee1Salary = em1.find(Employee.class, e1Id).getSalary();
             int employee2Salary = em1.find(Employee.class, e2Id).getSalary();
             int employee3Salary = em1.find(Employee.class, e3Id).getSalary();
+            employee1 = em.find(Employee.class, e1Id);
+            em1.remove(employee1);
+            employee2 = em.find(Employee.class, e2Id);
+            em1.remove(employee2);
+            employee3 = em.find(Employee.class, e3Id);
+            em1.remove(employee3);
             commitTransaction(em1);
             closeEntityManager(em1);
             assertEquals(salarySum, employee1Salary + employee2Salary + employee3Salary);
@@ -1867,6 +1876,12 @@ public class EntityManagerJUnitTestSuite extends JUnitTestCase {
             int employee1Salary = em1.find(Employee.class, e1Id).getSalary();
             int employee2Salary = em1.find(Employee.class, e2Id).getSalary();
             int employee3Salary = em1.find(Employee.class, e3Id).getSalary();
+            employee1 = em.find(Employee.class, e1Id);
+            em1.remove(employee1);
+            employee2 = em.find(Employee.class, e2Id);
+            em1.remove(employee2);
+            employee3 = em.find(Employee.class, e3Id);
+            em1.remove(employee3);
             commitTransaction(em1);
             closeEntityManager(em1);
             assertEquals(salarySum, employee1Salary + employee2Salary + employee3Salary);
@@ -1923,6 +1938,12 @@ public class EntityManagerJUnitTestSuite extends JUnitTestCase {
             int employee1Salary = em1.find(Employee.class, e1Id).getSalary();
             int employee2Salary = em1.find(Employee.class, e2Id).getSalary();
             int employee3Salary = em1.find(Employee.class, e3Id).getSalary();
+            employee1 = em.find(Employee.class, e1Id);
+            em1.remove(employee1);
+            employee2 = em.find(Employee.class, e2Id);
+            em1.remove(employee2);
+            employee3 = em.find(Employee.class, e3Id);
+            em1.remove(employee3);
             commitTransaction(em1);
             closeEntityManager(em1);
 //            assertEquals(salarySum, employee1Salary + employee2Salary + employee3Salary);
@@ -1993,7 +2014,13 @@ public class EntityManagerJUnitTestSuite extends JUnitTestCase {
             em2.persist(employee3);
             commitTransaction(em2);
             closeEntityManager(em2);
-            commitTransaction(em1);
+            commitTransaction(em1); // should fail under stict serializability, but doesn't due to how EclispeLink handles transactions
+            // Remove newly created Employee objects
+            beginTransaction(em1);
+            employee1 = em1.find(Employee.class, e1Id);
+            em1.remove(employee1);
+            employee2 = em1.find(Employee.class, e2Id);
+            em1.remove(employee2);
             closeEntityManager(em1);
         }
     }
